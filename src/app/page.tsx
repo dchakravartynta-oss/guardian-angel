@@ -8,7 +8,7 @@ import { ContactManager } from '@/components/contact-manager';
 import { Button } from '@/components/ui/button';
 import { Loader2, Siren } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { composeMessageAction } from '@/app/actions';
+import { sendSosAction } from '@/app/actions';
 
 export default function Home() {
   const [contacts, setContacts] = useState<Contact[]>([]);
@@ -111,27 +111,26 @@ export default function Home() {
     setIsLoading(true);
     toast({
       title: 'Sending SOS...',
-      description: 'Composing and preparing your emergency message.',
+      description: 'Contacting emergency services and loved ones.',
     });
 
-    const result = await composeMessageAction({
-      latitude: location.latitude,
-      longitude: location.longitude,
-      situation: selectedTemplate.situation,
-      template: selectedTemplate.title,
-    });
+    const result = await sendSosAction(
+      {
+        latitude: location.latitude,
+        longitude: location.longitude,
+        situation: selectedTemplate.situation,
+        template: selectedTemplate.title,
+      },
+      contacts,
+      `SOS: ${selectedTemplate.title}`
+    );
 
     setIsLoading(false);
 
     if (result.success) {
-      const emails = contacts.map((c) => c.email).join(',');
-      const mailtoLink = `mailto:${emails}?subject=${encodeURIComponent(
-        `SOS: ${selectedTemplate.title}`
-      )}&body=${encodeURIComponent(result.message)}`;
-      window.location.href = mailtoLink;
       toast({
-        title: 'Message Ready!',
-        description: 'Your email app should open. Just press send!',
+        title: 'SOS Sent!',
+        description: 'Your emergency contacts have been notified via email.',
       });
     } else {
       toast({

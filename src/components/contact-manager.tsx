@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Phone, Trash2, User, UserPlus, Users } from 'lucide-react';
+import { Mail, Trash2, User, UserPlus, Users } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -37,10 +37,7 @@ import {
 
 const contactSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
-  phone: z
-    .string()
-    .min(10, { message: 'Phone number must be at least 10 digits.' })
-    .regex(/^[\d\s()+-]+$/, { message: 'Invalid phone number format.' }),
+  email: z.string().email({ message: 'Please enter a valid email address.' }),
 });
 
 type ContactManagerProps = {
@@ -54,7 +51,7 @@ export function ContactManager({ contacts, setContacts }: ContactManagerProps) {
     resolver: zodResolver(contactSchema),
     defaultValues: {
       name: '',
-      phone: '',
+      email: '',
     },
   });
 
@@ -91,7 +88,7 @@ export function ContactManager({ contacts, setContacts }: ContactManagerProps) {
             <DialogHeader>
               <DialogTitle>Add New Contact</DialogTitle>
               <DialogDescription>
-                Enter the name and phone number of your emergency contact.
+                Enter the name and email of your emergency contact.
               </DialogDescription>
             </DialogHeader>
             <Form {...form}>
@@ -114,14 +111,14 @@ export function ContactManager({ contacts, setContacts }: ContactManagerProps) {
                 />
                 <FormField
                   control={form.control}
-                  name="phone"
+                  name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Phone Number</FormLabel>
+                      <FormLabel>Email Address</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="e.g. +1234567890"
-                          type="tel"
+                          placeholder="e.g. jane.doe@example.com"
+                          type="email"
                           {...field}
                         />
                       </FormControl>
@@ -161,8 +158,8 @@ export function ContactManager({ contacts, setContacts }: ContactManagerProps) {
                       {contact.name}
                     </span>
                     <span className="text-sm text-muted-foreground flex items-center gap-2">
-                      <Phone className="h-4 w-4 text-muted-foreground" />
-                      {contact.phone}
+                      <Mail className="h-4 w-4 text-muted-foreground" />
+                      {contact.email}
                     </span>
                   </div>
                   <Button

@@ -3,7 +3,7 @@ import type { LucideIcon } from 'lucide-react';
 export type Contact = {
   id: string;
   name: string;
-  phone: string;
+  email: string;
 };
 
 export type EmergencyTemplate = {

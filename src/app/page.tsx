@@ -124,14 +124,14 @@ export default function Home() {
     setIsLoading(false);
 
     if (result.success) {
-      const phoneNumbers = contacts.map((c) => c.phone).join(',');
-      const smsLink = `sms:${phoneNumbers}?body=${encodeURIComponent(
-        result.message
-      )}`;
-      window.location.href = smsLink;
+      const emails = contacts.map((c) => c.email).join(',');
+      const mailtoLink = `mailto:${emails}?subject=${encodeURIComponent(
+        `SOS: ${selectedTemplate.title}`
+      )}&body=${encodeURIComponent(result.message)}`;
+      window.location.href = mailtoLink;
       toast({
         title: 'Message Ready!',
-        description: 'Your messaging app should open. Just press send!',
+        description: 'Your email app should open. Just press send!',
       });
     } else {
       toast({

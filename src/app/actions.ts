@@ -23,6 +23,14 @@ export async function sendSosAction(
     }
 
     const result = await composeEmergencyMessage(composeInput);
+    
+    if (!result?.message) {
+      console.error('AI failed to generate a message.');
+      return {
+        success: false,
+        message: 'There was a problem generating the emergency message. Please try again.',
+      };
+    }
     const message = result.message;
 
     const transporter = nodemailer.createTransport({

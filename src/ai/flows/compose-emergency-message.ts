@@ -35,14 +35,21 @@ const composeEmergencyMessagePrompt = ai.definePrompt({
   name: 'composeEmergencyMessagePrompt',
   input: {schema: ComposeEmergencyMessageInputSchema},
   output: {schema: ComposeEmergencyMessageOutputSchema},
-  prompt: `You are an AI assistant that composes emergency messages.
+  prompt: `You are an AI assistant that composes clear, concise, and empathetic emergency messages.
 
-  Compose an emergency message based on the following information:
+  Compose an emergency message based on the following information. The tone should be serious and urgent, but calm. Start with a clear statement of the emergency type.
 
   Template: {{{template}}}
   Situation: {{{situation}}}
   Location: Latitude {{{latitude}}}, Longitude {{{longitude}}}
-  Google Maps Link: https://www.google.com/maps?q={{{latitude}}},{{{longitude}}}
+
+  Include a direct link to Google Maps for the location. End the message with a clear call to action.
+
+  Example:
+  This is an urgent [Template] alert.
+  [Situation]
+  My current location is: [Link to Google Maps]
+  Please contact me or emergency services immediately.
   `,
 });
 
@@ -54,7 +61,9 @@ const composeEmergencyMessageFlow = ai.defineFlow(
   },
   async input => {
     const {output} = await composeEmergencyMessagePrompt(input);
-    return output!;
+    const googleMapsLink = `https://www.google.com/maps?q=${input.latitude},${input.longitude}`;
+    const messageWithLink = `${output!.message}\nMy current location is: ${googleMapsLink}`;
+
+    return { message: messageWithLink };
   }
 );
-

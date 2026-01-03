@@ -21,11 +21,9 @@ import {
   DialogClose,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Mail, Trash2, User, UserPlus, Users } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
 import {
   Form,
   FormControl,
@@ -34,11 +32,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-
-const contactSchema = z.object({
-  name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
-  email: z.string().email({ message: 'Please enter a valid email address.' }),
-});
+import { contactSchema, type ContactFormValues } from '@/lib/contact-form';
 
 type ContactManagerProps = {
   contacts: Contact[];
@@ -47,7 +41,7 @@ type ContactManagerProps = {
 
 export function ContactManager({ contacts, setContacts }: ContactManagerProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const form = useForm<z.infer<typeof contactSchema>>({
+  const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactSchema),
     defaultValues: {
       name: '',
@@ -55,7 +49,7 @@ export function ContactManager({ contacts, setContacts }: ContactManagerProps) {
     },
   });
 
-  const addContact = (values: z.infer<typeof contactSchema>) => {
+  const addContact = (values: ContactFormValues) => {
     const newContact = { id: crypto.randomUUID(), ...values };
     setContacts((prev) => [...prev, newContact]);
     form.reset();
